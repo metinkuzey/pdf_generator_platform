@@ -166,3 +166,6 @@ minio_data/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Kiro IDE files
+.kiro/
