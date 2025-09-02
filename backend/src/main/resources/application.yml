@@ -1,0 +1,150 @@
+spring:
+  application:
+    name: pdf-generator-backend
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pdf_generator
+    username: pdf_user
+    password: pdf_password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+  
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+  
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: pdf_user
+    password: pdf_password
+    virtual-host: /
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          multiplier: 2
+  
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.pdfgenerator: DEBUG
+    org.springframework.security: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/pdf-generator.log
+
+# Custom application properties
+app:
+  jwt:
+    secret: mySecretKey123456789012345678901234567890
+    expiration: 86400000 # 24 hours
+  
+  minio:
+    endpoint: http://localhost:9000
+    access-key: pdf_user
+    secret-key: pdf_password
+    bucket:
+      templates: pdf-templates
+      outputs: pdf-outputs
+  
+  pdf:
+    generation:
+      timeout: 30000 # 30 seconds
+      max-concurrent: 10
+  
+  cache:
+    template:
+      ttl: 3600 # 1 hour
+    pdf:
+      ttl: 1800 # 30 minutes
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+  
+  data:
+    redis:
+      host: localhost
+      port: 6370 # Different port for test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  
+  datasource:
+    url: jdbc:postgresql://postgres:5432/pdf_generator
+  
+  data:
+    redis:
+      host: redis
+  
+  rabbitmq:
+    host: rabbitmq
+
+app:
+  minio:
+    endpoint: http://minio:9000
