@@ -2,6 +2,7 @@ package com.pdfgenerator.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pdfgenerator.enums.PDFGenerationStatus;
+import com.pdfgenerator.util.UUIDGenerator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -53,6 +54,13 @@ public class PDFGenerationLog {
 
     // Default constructor
     public PDFGenerationLog() {}
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null) {
+            this.id = UUIDGenerator.generateUUID();
+        }
+    }
 
     // Constructor with required fields
     public PDFGenerationLog(String id, String templateId, PDFGenerationStatus status) {

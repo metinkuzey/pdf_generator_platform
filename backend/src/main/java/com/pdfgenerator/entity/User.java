@@ -3,6 +3,7 @@ package com.pdfgenerator.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pdfgenerator.enums.UserRole;
+import com.pdfgenerator.util.UUIDGenerator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -51,6 +52,13 @@ public class User {
 
     // Default constructor
     public User() {}
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null) {
+            this.id = UUIDGenerator.generateUUID();
+        }
+    }
 
     // Constructor with required fields
     public User(String id, String username, String email, String passwordHash) {

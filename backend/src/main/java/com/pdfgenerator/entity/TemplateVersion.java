@@ -1,6 +1,7 @@
 package com.pdfgenerator.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.pdfgenerator.util.UUIDGenerator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -42,6 +43,13 @@ public class TemplateVersion {
 
     // Default constructor
     public TemplateVersion() {}
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null) {
+            this.id = UUIDGenerator.generateUUID();
+        }
+    }
 
     // Constructor with required fields
     public TemplateVersion(String id, String templateId, Integer version, Map<String, Object> schema) {
