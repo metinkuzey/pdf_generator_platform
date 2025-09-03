@@ -11,6 +11,7 @@ public class ErrorResponse {
     private LocalDateTime timestamp;
     private List<String> errors;
     private Map<String, Object> context;
+    private Map<String, Object> details;
     
     // Constructors
     public ErrorResponse() {
@@ -53,6 +54,11 @@ public class ErrorResponse {
         
         public Builder context(Map<String, Object> context) {
             errorResponse.context = context;
+            return this;
+        }
+        
+        public Builder details(Map<String, Object> details) {
+            errorResponse.details = details;
             return this;
         }
         
@@ -105,5 +111,13 @@ public class ErrorResponse {
     
     public void setContext(Map<String, Object> context) {
         this.context = context;
+    }
+    
+    public Map<String, Object> getDetails() {
+        return details;
+    }
+    
+    public void setDetails(Map<String, Object> details) {
+        this.details = details;
     }
 }

@@ -44,6 +44,33 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
     
+    @ExceptionHandler(PDFGenerationException.class)
+    public ResponseEntity<ErrorResponse> handlePDFGenerationException(
+            PDFGenerationException ex, WebRequest request) {
+        
+        ErrorResponse errorResponse = ErrorResponse.builder()
+            .code(ex.getErrorCode().getCode())
+            .message(ex.getMessage())
+            .timestamp(LocalDateTime.now())
+            .build();
+        
+        // Add context information if available
+        if (!ex.getContext().isEmpty()) {
+            Map<String, Object> details = new HashMap<>();
+            details.put("context", ex.getContext());
+            errorResponse.setDetails(details);
+        }
+        
+        // Determine HTTP status based on error code
+        HttpStatus status = switch (ex.getErrorCode()) {
+            case TEMPLATE_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case INVALID_DATA_FORMAT -> HttpStatus.BAD_REQUEST;
+            default -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
+        
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException ex, WebRequest request) {
