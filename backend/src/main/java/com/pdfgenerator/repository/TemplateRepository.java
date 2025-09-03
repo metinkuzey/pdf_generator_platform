@@ -22,6 +22,36 @@ public interface TemplateRepository extends JpaRepository<Template, String> {
     List<Template> findByActiveTrue();
 
     /**
+     * Find all active templates ordered by creation date descending
+     */
+    List<Template> findByActiveTrueOrderByCreatedAtDesc();
+
+    /**
+     * Find all active templates with pagination ordered by creation date descending
+     */
+    Page<Template> findByActiveTrueOrderByCreatedAtDesc(Pageable pageable);
+
+    /**
+     * Find templates by category ordered by creation date descending
+     */
+    List<Template> findByCategoryAndActiveTrueOrderByCreatedAtDesc(TemplateCategory category);
+
+    /**
+     * Find templates by name containing (case insensitive) ordered by creation date descending
+     */
+    List<Template> findByNameContainingIgnoreCaseAndActiveTrueOrderByCreatedAtDesc(String name);
+
+    /**
+     * Check if template exists by ID and active status
+     */
+    boolean existsByIdAndActiveTrue(String id);
+
+    /**
+     * Count all active templates
+     */
+    long countByActiveTrue();
+
+    /**
      * Find templates by category
      */
     List<Template> findByCategoryAndActiveTrue(TemplateCategory category);
