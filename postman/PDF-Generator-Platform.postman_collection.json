@@ -1,0 +1,226 @@
+{
+  "info": {
+    "name": "PDF Generator Platform",
+    "description": "API collection for PDF Generator Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "templateId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "health"]
+        }
+      }
+    },
+    {
+      "name": "Templates",
+      "item": [
+        {
+          "name": "Get All Templates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["templates"]
+            }
+          }
+        },
+        {
+          "name": "Create Template - Credit Card Statement",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('templateId', response.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kredi Kartı Tahsilat Belgesi\",\n  \"category\": \"CREDIT_CARD_STATEMENT\",\n  \"description\": \"Kredi kartı tahsilat işlemleri için kullanılan belge şablonu\",\n  \"schema\": {\n    \"layout\": {\n      \"pageSize\": \"A4\",\n      \"margins\": {\n        \"top\": 20,\n        \"right\": 20,\n        \"bottom\": 20,\n        \"left\": 20\n      }\n    },\n    \"elements\": [\n      {\n        \"type\": \"TEXT\",\n        \"properties\": {\n          \"text\": \"KREDİ KARTI TAHSİLAT BELGESİ\",\n          \"fontSize\": 18,\n          \"fontWeight\": \"bold\",\n          \"textAlign\": \"center\"\n        }\n      },\n      {\n        \"type\": \"TABLE\",\n        \"properties\": {\n          \"columns\": [\n            {\n              \"header\": \"Müşteri Bilgileri\",\n              \"width\": 50\n            },\n            {\n              \"header\": \"Değer\",\n              \"width\": 50\n            }\n          ],\n          \"rows\": [\n            {\n              \"label\": \"Müşteri Adı\",\n              \"value\": \"{{customer_name}}\"\n            },\n            {\n              \"label\": \"Müşteri No\",\n              \"value\": \"{{customer_id}}\"\n            },\n            {\n              \"label\": \"Kart No\",\n              \"value\": \"{{card_number}}\"\n            },\n            {\n              \"label\": \"Tahsilat Tutarı\",\n              \"value\": \"{{amount}}\"\n            },\n            {\n              \"label\": \"Tahsilat Tarihi\",\n              \"value\": \"{{collection_date}}\"\n            }\n          ]\n        }\n      }\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["templates"]
+            }
+          }
+        },
+        {
+          "name": "Create Template - Insurance Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sağlık Sigortası Poliçesi\",\n  \"category\": \"HEALTH_INSURANCE_POLICY\",\n  \"description\": \"Sağlık sigortası poliçe belgesi şablonu\",\n  \"schema\": {\n    \"layout\": {\n      \"pageSize\": \"A4\",\n      \"margins\": {\n        \"top\": 20,\n        \"right\": 20,\n        \"bottom\": 20,\n        \"left\": 20\n      }\n    },\n    \"elements\": [\n      {\n        \"type\": \"CONTAINER\",\n        \"children\": [\n          {\n            \"type\": \"TEXT\",\n            \"properties\": {\n              \"text\": \"SAĞLIK SİGORTASI POLİÇESİ\",\n              \"fontSize\": 20,\n              \"fontWeight\": \"bold\",\n              \"textAlign\": \"center\"\n            }\n          },\n          {\n            \"type\": \"TEXT\",\n            \"properties\": {\n              \"text\": \"Poliçe No: {{policy_number}}\",\n              \"fontSize\": 12,\n              \"textAlign\": \"right\"\n            }\n          }\n        ]\n      },\n      {\n        \"type\": \"TABLE\",\n        \"properties\": {\n          \"columns\": [\n            {\n              \"header\": \"Sigortalı Bilgileri\",\n              \"width\": 30\n            },\n            {\n              \"header\": \"Değer\",\n              \"width\": 70\n            }\n          ],\n          \"rows\": [\n            {\n              \"label\": \"Ad Soyad\",\n              \"value\": \"{{insured_name}}\"\n            },\n            {\n              \"label\": \"TC Kimlik No\",\n              \"value\": \"{{tc_number}}\"\n            },\n            {\n              \"label\": \"Doğum Tarihi\",\n              \"value\": \"{{birth_date}}\"\n            },\n            {\n              \"label\": \"Prim Tutarı\",\n              \"value\": \"{{premium_amount}}\"\n            },\n            {\n              \"label\": \"Başlangıç Tarihi\",\n              \"value\": \"{{start_date}}\"\n            },\n            {\n              \"label\": \"Bitiş Tarihi\",\n              \"value\": \"{{end_date}}\"\n            }\n          ]\n        }\n      }\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["templates"]
+            }
+          }
+        },\n        {\n          \"name\": \"Get Template by ID\",\n          \"request\": {\n            \"method\": \"GET\",\n            \"header\": [],\n            \"url\": {\n              \"raw\": \"{{baseUrl}}/templates/{{templateId}}\",\n              \"host\": [\"{{baseUrl}}\"],\n              \"path\": [\"templates\", \"{{templateId}}\"]\n            }\n          }\n        },\n        {\n          \"name\": \"Update Template\",\n          \"request\": {\n            \"method\": \"PUT\",\n            \"header\": [\n              {\n                \"key\": \"Content-Type\",\n                \"value\": \"application/json\"\n              }\n            ],\n            \"body\": {\n              \"mode\": \"raw\",\n              \"raw\": \"{\\n  \\\"name\\\": \\\"Updated Template Name\\\",\\n  \\\"description\\\": \\\"Updated description\\\"\\n}\"\n            },\n            \"url\": {\n              \"raw\": \"{{baseUrl}}/templates/{{templateId}}\",\n              \"host\": [\"{{baseUrl}}\"],\n              \"path\": [\"templates\", \"{{templateId}}\"]\n            }\n          }\n        },\n        {\n          \"name\": \"Delete Template\",\n          \"request\": {\n            \"method\": \"DELETE\",\n            \"header\": [],\n            \"url\": {\n              \"raw\": \"{{baseUrl}}/templates/{{templateId}}\",\n              \"host\": [\"{{baseUrl}}\"],\n              \"path\": [\"templates\", \"{{templateId}}\"]\n            }\n          }\n        }\n      ]\n    },\n    {\n      \"name\": \"PDF Generation\",\n      \"item\": [\n        {\n          \"name\": \"Generate PDF - Credit Card Statement\",\n          \"request\": {\n            \"method\": \"POST\",\n            \"header\": [\n              {\n                \"key\": \"Content-Type\",\n                \"value\": \"application/json\"\n              }\n            ],\n            \"body\": {\n              \"mode\": \"raw\",\n              \"raw\": \"{\\n  \\\"customer_name\\\": \\\"Ahmet Yılmaz\\\",\\n  \\\"customer_id\\\": \\\"12345678901\\\",\\n  \\\"card_number\\\": \\\"**** **** **** 1234\\\",\\n  \\\"amount\\\": \\\"2.500,00 TL\\\",\\n  \\\"collection_date\\\": \\\"15/01/2025\\\"\\n}\"\n            },\n            \"url\": {\n              \"raw\": \"{{baseUrl}}/pdf/generate/{{templateId}}\",\n              \"host\": [\"{{baseUrl}}\"],\n              \"path\": [\"pdf\", \"generate\", \"{{templateId}}\"]\n            }\n          }\n        },\n        {\n          \"name\": \"Generate PDF - Insurance Policy\",\n          \"request\": {\n            \"method\": \"POST\",\n            \"header\": [\n              {\n                \"key\": \"Content-Type\",\n                \"value\": \"application/json\"\n              }\n            ],\n            \"body\": {\n              \"mode\": \"raw\",\n              \"raw\": \"{\\n  \\\"policy_number\\\": \\\"POL-2025-001\\\",\\n  \\\"insured_name\\\": \\\"Mehmet Demir\\\",\\n  \\\"tc_number\\\": \\\"12345678901\\\",\\n  \\\"birth_date\\\": \\\"01/01/1990\\\",\\n  \\\"premium_amount\\\": \\\"1.200,00 TL\\\",\\n  \\\"start_date\\\": \\\"01/01/2025\\\",\\n  \\\"end_date\\\": \\\"31/12/2025\\\"\\n}\"\n            },\n            \"url\": {\n              \"raw\": \"{{baseUrl}}/pdf/generate/{{templateId}}\",\n              \"host\": [\"{{baseUrl}}\"],\n              \"path\": [\"pdf\", \"generate\", \"{{templateId}}\"]\n            }\n          }\n        },\n        {\n          \"name\": \"Generate PDF Preview\",\n          \"request\": {\n            \"method\": \"POST\",\n            \"header\": [\n              {\n                \"key\": \"Content-Type\",\n                \"value\": \"application/json\"\n              }\n            ],\n            \"body\": {\n              \"mode\": \"raw\",\n              \"raw\": \"{}\"\n            },\n            \"url\": {\n              \"raw\": \"{{baseUrl}}/pdf/preview/{{templateId}}\",\n              \"host\": [\"{{baseUrl}}\"],\n              \"path\": [\"pdf\", \"preview\", \"{{templateId}}\"]\n            }\n          }\n        }\n      ]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["templates"]
+            }
+          }
+        },
+        {
+          "name": "Get Template by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/templates/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["templates", "{{templateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Template",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Template Name\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/templates/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["templates", "{{templateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Template",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/templates/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["templates", "{{templateId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PDF Generation",
+      "item": [
+        {
+          "name": "Generate PDF - Credit Card Statement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Ahmet Yılmaz\",\n  \"customer_id\": \"12345678901\",\n  \"card_number\": \"**** **** **** 1234\",\n  \"amount\": \"2.500,00 TL\",\n  \"collection_date\": \"15/01/2025\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/pdf/generate/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["pdf", "generate", "{{templateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Generate PDF - Insurance Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"policy_number\": \"POL-2025-001\",\n  \"insured_name\": \"Mehmet Demir\",\n  \"tc_number\": \"12345678901\",\n  \"birth_date\": \"01/01/1990\",\n  \"premium_amount\": \"1.200,00 TL\",\n  \"start_date\": \"01/01/2025\",\n  \"end_date\": \"31/12/2025\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/pdf/generate/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["pdf", "generate", "{{templateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Generate PDF Preview",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/pdf/preview/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["pdf", "preview", "{{templateId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
