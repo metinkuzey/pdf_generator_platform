@@ -165,9 +165,3 @@ docker ps
 ./scripts/logs.sh postgres
 ./scripts/logs.sh backend
 ```
-
-## 📚 Documentation
-
-- [Requirements](.kiro/specs/pdf-generator-platform/requirements.md)
-- [Design](.kiro/specs/pdf-generator-platform/design.md)
-- [Implementation Tasks](.kiro/specs/pdf-generator-platform/tasks.md)
